@@ -1,1 +1,1 @@
-playwright_test
+pytest-playwright
