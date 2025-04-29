@@ -1,6 +1,6 @@
 import pytest
 
-from pom.page_objects.quote_page import QuotePage
+from pages.quote_page import QuotePage
 
 SLEEP_TIMER = 5
 
@@ -59,7 +59,7 @@ def test_submit_unfilled_form(page, sleep_short):
 
 
 # @pytest.mark.positive
-@pytest.mark.happy_path
+@pytest.mark.happy_path_quote
 @pytest.mark.parametrize(
     "name, email, service, message",
     [
@@ -74,7 +74,7 @@ def test_happy_path(page, sleep_short, name, email, service, message):
     quote_page.assert_default_form_state()
 
     quote_page.fill_form(name, email, service, message)
-    quote_page.assert_filled_state(name, email, service, message)
+    quote_page.assert_filled_form_state(name, email, service, message)
 
     quote_page.request_quote_click()
 
