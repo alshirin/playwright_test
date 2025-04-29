@@ -13,7 +13,7 @@ class QuotePage(BasePage):
         self.service_select = page.locator("#q_service")
         self.message_input = page.locator("#q_message")
         self.request_quote_button = page.get_by_role("button", name="Request A Quote")
-        self.quote_status = page.locator("#quoteStatus")
+        self.request_status = page.locator("#quoteStatus")
 
     def load(self) -> None:
         self.visit(self.URL)
@@ -27,8 +27,8 @@ class QuotePage(BasePage):
     def get_selected_service_option(self) -> Locator:
         return self.service_select.locator("option:checked")
 
-    def get_quote_status_div_height(self) -> str:
-        return self.quote_status.evaluate(
+    def get_request_status_div_height(self) -> str:
+        return self.request_status.evaluate(
             "el => getComputedStyle(el).getPropertyValue('height')"
         )
 
@@ -36,7 +36,7 @@ class QuotePage(BasePage):
         self.request_quote_button.click()
 
     def assert_default_form_state(self, submitted: bool = False) -> None:
-        quote_status_element_height = "auto" if submitted == False else "24px"
+        request_status_element_height = "auto" if submitted == False else "24px"
 
         def assert_text_input_ready(text_input: Locator) -> None:
             expect(text_input).to_be_visible()
@@ -59,13 +59,13 @@ class QuotePage(BasePage):
 
         assert_text_input_ready(self.name_input)
         assert_text_input_ready(self.email_input)
-        assert_text_input_ready(self.message_input)
         assert_combo_service_ready(self.service_select)
+        assert_text_input_ready(self.message_input)
         assert_request_quote_button_ready(self.request_quote_button)
 
-        assert self.get_quote_status_div_height() == quote_status_element_height
+        assert self.get_request_status_div_height() == request_status_element_height
 
-    def assert_filled_state(
+    def assert_filled_form_state(
         self, name: str, email: str, service: str, message: str
     ) -> None:
         expect(self.name_input).to_have_value(name)
@@ -76,5 +76,5 @@ class QuotePage(BasePage):
     def assert_submitted_state(
         self, success_message: str = "Форма отправлена успешно!"
     ) -> None:
-        expect(self.page.locator("#quoteStatus")).to_contain_text(success_message)
-        assert self.get_quote_status_div_height() == "24px"
+        expect(self.request_status).to_contain_text(success_message)
+        assert self.get_request_status_div_height() == "24px"
