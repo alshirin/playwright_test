@@ -34,7 +34,7 @@ def get_browser(playwright: sync_playwright, browser_type: e.BrowserType):
 
 @pytest.fixture(
     params=[e.BrowserType.CHROMIUM, e.BrowserType.FIREFOX, e.BrowserType.SAFARI],
-    # scope="session",
+    scope="session",
 )
 def browser_context(request: pytest.FixtureRequest) -> Iterator[BrowserContext]:
     browser_type = request.param
