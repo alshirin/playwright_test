@@ -1,1 +1,4 @@
 pytest-playwright
+playwright
+pytest-xdist
+pytest
