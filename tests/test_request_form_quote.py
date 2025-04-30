@@ -78,7 +78,7 @@ def test_happy_path(page, sleep_short, name, email, service, message):
 
     quote_page.request_quote_click()
 
-    sleep_short(SLEEP_TIMER)
+    sleep_short(1)
 
     quote_page.assert_submitted_state(success_message="Форма отправлена успешно!")
     quote_page.assert_default_form_state(submitted=True)

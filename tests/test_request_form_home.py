@@ -55,21 +55,14 @@ def test_happy_path(
     home_page = HomePage(page)
     home_page.load()
 
-    # sleep_short(SLEEP_TIMER)
-
-    # home_page.form.scroll_into_view_if_needed()
-
-    home_page.assert_default_form_state()
+    home_page.assert_default_form_state(submitted=False)
 
     home_page.fill_form(name, email, service, purpose, withdrawals, message)
-    home_page.assert_filled_form_state(
-        name, email, service, purpose, withdrawals, message
-    )
-    # page.pause()
-    #
+    home_page.assert_filled_form_state(name, email, service, purpose, withdrawals, message)
+
     home_page.request_quote_click()
-    #
-    # sleep_short(1)
+
+    sleep_short(1)
 
     home_page.assert_submitted_state(success_message="Форма отправлена.")
     home_page.assert_default_form_state(submitted=True)
