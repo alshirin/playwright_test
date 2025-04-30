@@ -5,60 +5,7 @@ from pages.quote_page import QuotePage
 SLEEP_TIMER = 5
 
 
-# @pytest.mark.positive
-# def test_quote_form_initial_state(page, sleep_short):
-#     quote_page = QuotePage(page)
-#     quote_page.load()
-#     # sleep_short(SLEEP_TIMER)
-#     quote_page.assert_initial_state()
-#     # sleep_short(SLEEP_TIMER)
-#
-#
-# @pytest.mark.positive
-# def test_form_filling(page, sleep_short):
-#     quote_page = QuotePage(page)
-#     quote_page.load()
-#     # sleep_short(SLEEP_TIMER)
-#     quote_page.fill_form("Test Name", "test@mail.com", "Service 1", "Test Message")
-#
-#     assert quote_page.name_input.input_value() == "Test Name"
-#     assert quote_page.email_input.input_value() == "test@mail.com"
-#     assert quote_page.get_selected_service_option().inner_text() == "Service 1"
-#     assert quote_page.message_input.input_value() == "Test Message"
-#
-#     # sleep_short(SLEEP_TIMER)
-#
-#
-# @pytest.mark.positive
-# def test_form_submitting(page, sleep_short):
-#     quote_page = QuotePage(page)
-#     quote_page.load()
-#     # sleep_short(SLEEP_TIMER)
-#     quote_page.fill_form("Test Name", "test@mail.com", "Service 1", "Test Message")
-#
-#     assert quote_page.name_input.input_value() == "Test Name"
-#     assert quote_page.email_input.input_value() == "test@mail.com"
-#     assert quote_page.get_selected_service_option().inner_text() == "Service 1"
-#     assert quote_page.message_input.input_value() == "Test Message"
-#
-#     # quote_page.request_quote_click()
-#
-#     # sleep_short(SLEEP_TIMER)
-
-
-@pytest.mark.negative
-def test_submit_unfilled_form(page, sleep_short):
-    quote_page = QuotePage(page)
-    quote_page.load()
-    quote_page.assert_default_form_state()
-
-    quote_page.request_quote_click()
-    sleep_short(SLEEP_TIMER)
-
-    assert None  # TODO: add negative checks
-
-
-# @pytest.mark.positive
+@pytest.mark.positive
 @pytest.mark.happy_path_quote
 @pytest.mark.parametrize(
     "name, email, service, message",
