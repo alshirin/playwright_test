@@ -1,5 +1,5 @@
 from playwright.sync_api import expect, Locator  # type: ignore
-from typing import List, Optional
+from typing import List, Dict, Optional
 
 import enums as e
 from .base_page import BasePage
@@ -27,6 +27,11 @@ class HomePage(BasePage):
         self.wo_cash = page.locator("#withdrawCash")
         self.wo_card = page.locator("#withdrawCard")
         self.wo_crypto = page.locator("#withdrawCrypto")
+        self._withdrawal_locators: Dict[e.WithdrawOption, Locator] = {
+            e.WithdrawOption.CASH: self.wo_cash,
+            e.WithdrawOption.CARD: self.wo_card,
+            e.WithdrawOption.CRYPTO: self.wo_crypto,
+        }
 
         self.message_input = page.locator("#message")
         self.request_quote_button = page.get_by_role("button", name="Request A Quote")
@@ -56,12 +61,9 @@ class HomePage(BasePage):
             )
 
         if withdrawals:
-            if e.WithdrawOption.CASH in withdrawals:
-                self.wo_cash.check()
-            if e.WithdrawOption.CARD in withdrawals:
-                self.wo_card.check()
-            if e.WithdrawOption.CRYPTO in withdrawals:
-                self.wo_crypto.check()
+            for option in withdrawals:
+                if option in self._withdrawal_locators:
+                    self._withdrawal_locators[option].check()
 
         self.message_input.fill(message)
 
@@ -116,9 +118,8 @@ class HomePage(BasePage):
 
         assert_combo_service_ready(self.service_select)
 
-        assert_checkbox_ready(self.wo_cash)
-        assert_checkbox_ready(self.wo_card)
-        assert_checkbox_ready(self.wo_crypto)
+        for option in self._withdrawal_locators.values():
+            assert_checkbox_ready(option)
 
         assert_radio_ready(self.purpose_business)
         assert_radio_ready(self.purpose_personal)
@@ -149,12 +150,14 @@ class HomePage(BasePage):
             else expect(self.purpose_personal)
         )
         if withdrawals:
-            if e.WithdrawOption.CASH in withdrawals:
-                expect(self.wo_cash).to_be_checked()
-            if e.WithdrawOption.CARD in withdrawals:
-                expect(self.wo_card).to_be_checked()
-            if e.WithdrawOption.CRYPTO in withdrawals:
-                expect(self.wo_crypto).to_be_checked()
+            for option, locator in self._withdrawal_locators.items():
+                if option in withdrawals:
+                    expect(locator).to_be_checked()
+                else:
+                    expect(locator).not_to_be_checked()
+        else:
+            for locator in self._withdrawal_locators.values():
+                expect(locator).not_to_be_checked()
         expect(self.message_input).to_have_value(message)
 
     def assert_submitted_state(
