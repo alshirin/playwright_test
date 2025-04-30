@@ -71,7 +71,7 @@ def test_submit_unfilled_form(page, sleep_short):
 def test_happy_path(page, sleep_short, name, email, service, message):
     quote_page = QuotePage(page)
     quote_page.load()
-    quote_page.assert_default_form_state()
+    quote_page.assert_default_form_state(submitted=False)
 
     quote_page.fill_form(name, email, service, message)
     quote_page.assert_filled_form_state(name, email, service, message)
