@@ -8,7 +8,6 @@ class BrowserType(Enum):
     EDGE = auto()
 
 
-
 class AccountPurpose(Enum):
     BUSINESS = auto()
     PERSONAL = auto()
