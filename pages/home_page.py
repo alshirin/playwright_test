@@ -160,8 +160,24 @@ class HomePage(BasePage):
                 expect(locator).not_to_be_checked()
         expect(self.message_input).to_have_value(message)
 
-    def assert_submitted_state(self, success_message: str) -> None:
+    def assert_submit_state(self, submitted: bool, success_message: str = "Форма отправлена.") -> None:
         self.form.scroll_into_view_if_needed()
-
         expect(self.request_status).to_contain_text(success_message)
-        assert self.get_request_status_div_height() == "24px"
+        height = self.get_request_status_div_height()
+        if submitted:
+            assert height == "24px"
+        else:
+            assert height == "auto"
+
+    def is_invalid_name(self):
+        return "is-invalid" in self.name_input.get_attribute("class")
+
+    def is_invalid_email(self):
+        validation_message = self.email_input.evaluate("el => el.validationMessage")
+        return validation_message != ""
+
+    def is_invalid_service(self):
+        return "is-invalid" in self.service_select.get_attribute("class")
+
+    def is_invalid_message(self):
+        return "is-invalid" in self.message_input.get_attribute("class")
