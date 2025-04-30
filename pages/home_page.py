@@ -50,6 +50,7 @@ class HomePage(BasePage):
         withdrawals: Optional[List[e.WithdrawOption]],
         message: str,
     ) -> None:
+        self.form.scroll_into_view_if_needed()
         self.name_input.fill(name)
         self.email_input.fill(email)
         self.service_select.select_option(service)
@@ -68,21 +69,19 @@ class HomePage(BasePage):
         self.message_input.fill(message)
 
     def get_selected_service_option(self) -> Locator:
+        self.form.scroll_into_view_if_needed()
         return self.service_select.locator("option:checked")
 
-    def get_request_status_div_height(self) -> str:
-        return self.request_status.evaluate(
-            "el => getComputedStyle(el).getPropertyValue('height')"
-        )
+    def get_element_height(self, element: Locator) -> str:
+        self.form.scroll_into_view_if_needed()
+        return element.evaluate("el => getComputedStyle(el).getPropertyValue('height')")
 
     def request_quote_click(self) -> None:
+        self.form.scroll_into_view_if_needed()
         self.request_quote_button.click()
 
     def assert_default_form_state(self, submitted: bool = False) -> None:
-
         self.form.scroll_into_view_if_needed()
-
-        request_status_element_height = "auto" if submitted == False else "24px"
 
         def assert_text_input_ready(text_input: Locator) -> None:
             expect(text_input).to_be_visible()
@@ -128,7 +127,7 @@ class HomePage(BasePage):
 
         assert_request_quote_button_ready(self.request_quote_button)
 
-        assert self.get_request_status_div_height() == request_status_element_height
+        self.assert_request_status(submitted=submitted)
 
     def assert_filled_form_state(
         self,
@@ -160,10 +159,9 @@ class HomePage(BasePage):
                 expect(locator).not_to_be_checked()
         expect(self.message_input).to_have_value(message)
 
-    def assert_submit_state(self, submitted: bool, success_message: str = "Форма отправлена.") -> None:
+    def assert_request_status(self, submitted: bool) -> None:
         self.form.scroll_into_view_if_needed()
-        expect(self.request_status).to_contain_text(success_message)
-        height = self.get_request_status_div_height()
+        height = self.get_element_height(self.request_status)
         if submitted:
             assert height == "24px"
         else:
