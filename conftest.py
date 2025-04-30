@@ -1,4 +1,4 @@
-import time
+import sys, shutil, os, time
 from typing import Callable, Iterator
 
 import pytest
@@ -6,6 +6,7 @@ from playwright.sync_api import sync_playwright, BrowserContext, Page  # type: i
 
 import enums as e
 
+HEADLESS = True
 
 @pytest.fixture
 def page(browser_context: BrowserContext) -> Iterator[Page]:
@@ -21,19 +22,36 @@ def sleep_short() -> Callable:
 
     return sleeper
 
+def get_edge_path() -> str:
+    if sys.platform == "darwin":
+        path = "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge"
+        if os.path.exists(path):
+            return path
+    elif sys.platform == "win32":
+        return "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe"
+    elif sys.platform.startswith("linux"):
+        path = shutil.which("microsoft-edge") or shutil.which("edge")
+        if path:
+            return path
+    raise RuntimeError("Microsoft Edge not found on this system.")
 
 def get_browser(playwright: sync_playwright, browser_type: e.BrowserType):
     if browser_type == e.BrowserType.CHROMIUM:
-        return playwright.chromium.launch(headless=False)
+        return playwright.chromium.launch(headless=HEADLESS)
     elif browser_type == e.BrowserType.FIREFOX:
-        return playwright.firefox.launch(headless=False)
+        return playwright.firefox.launch(headless=HEADLESS)
     elif browser_type == e.BrowserType.SAFARI:
-        return playwright.webkit.launch(headless=False)
+        return playwright.webkit.launch(headless=HEADLESS)
+    elif browser_type == e.BrowserType.EDGE:
+        return playwright.chromium.launch(
+            headless=HEADLESS,
+            executable_path=get_edge_path()
+        )
     raise ValueError(f"Unsupported browser type: {browser_type}")
 
 
 @pytest.fixture(
-    params=[e.BrowserType.CHROMIUM, e.BrowserType.FIREFOX, e.BrowserType.SAFARI],
+    params=[e.BrowserType.CHROMIUM, e.BrowserType.FIREFOX, e.BrowserType.SAFARI, e.BrowserType.EDGE],
     scope="session",
 )
 def browser_context(request: pytest.FixtureRequest) -> Iterator[BrowserContext]:
