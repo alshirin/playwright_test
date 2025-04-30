@@ -71,5 +71,5 @@ def test_happy_path(
     #
     # sleep_short(1)
 
-    home_page.assert_submitted_state()
+    home_page.assert_submitted_state(success_message="Форма отправлена.")
     home_page.assert_default_form_state(submitted=True)

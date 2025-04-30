@@ -160,9 +160,7 @@ class HomePage(BasePage):
                 expect(locator).not_to_be_checked()
         expect(self.message_input).to_have_value(message)
 
-    def assert_submitted_state(
-        self, success_message: str = "Форма отправлена."
-    ) -> None:
+    def assert_submitted_state(self, success_message: str) -> None:
         self.form.scroll_into_view_if_needed()
 
         expect(self.request_status).to_contain_text(success_message)

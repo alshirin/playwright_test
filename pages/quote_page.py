@@ -73,8 +73,6 @@ class QuotePage(BasePage):
         expect(self.get_selected_service_option()).to_have_text(service)
         expect(self.message_input).to_have_value(message)
 
-    def assert_submitted_state(
-        self, success_message: str = "Форма отправлена успешно!"
-    ) -> None:
+    def assert_submitted_state(self, success_message: str) -> None:
         expect(self.request_status).to_contain_text(success_message)
         assert self.get_request_status_div_height() == "24px"
