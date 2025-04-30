@@ -6,7 +6,7 @@ from pages.home_page import HomePage
 SLEEP_TIMER = 5
 
 
-@pytest.mark.negative
+@pytest.mark.negative_home
 @pytest.mark.parametrize(
     "inv_name, inv_email, inv_service, purpose, withdrawals, inv_message",
     [

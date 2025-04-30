@@ -54,7 +54,7 @@ pytest -n auto -m happy_path_home -v
 
 - Run Negative tests:
 ```bash
-pytest -n auto -m negative -v
+pytest -n auto -m negative_home -v
 ```
 
 ### Additional Test Running OPtions
